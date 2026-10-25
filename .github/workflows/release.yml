@@ -1,0 +1,239 @@
+name: Build candidate packages (manual, no publication)
+
+# This workflow deliberately has no push/tag trigger and no Release mutation.
+# A successful artifact is a test candidate, not a compatibility certification.
+on:
+  workflow_dispatch:
+    inputs:
+      commit:
+        description: Full 40-character commit SHA to build and test before creating a release tag
+        required: true
+        type: string
+
+permissions:
+  contents: read
+
+concurrency:
+  group: candidate-${{ github.workflow }}-${{ inputs.commit }}
+  cancel-in-progress: false
+
+jobs:
+  resolve:
+    name: Verify the explicitly selected commit
+    runs-on: ubuntu-24.04
+    timeout-minutes: 5
+    outputs:
+      sha: ${{ steps.identity.outputs.sha }}
+      version: ${{ steps.identity.outputs.version }}
+    steps:
+      - name: Require an immutable commit rather than a moving branch
+        env:
+          CANDIDATE_COMMIT: ${{ inputs.commit }}
+        shell: bash
+        run: |
+          if [[ ! "$CANDIDATE_COMMIT" =~ ^[a-f0-9]{40}$ ]]; then
+            echo 'Select an existing full 40-character commit SHA.' >&2
+            exit 1
+          fi
+      - name: Check out only that existing commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ inputs.commit }}
+          fetch-depth: 1
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+      - name: Verify package version and pin the build commit
+        id: identity
+        env:
+          CANDIDATE_COMMIT: ${{ inputs.commit }}
+        shell: bash
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import { execFileSync } from 'node:child_process';
+          const selected = process.env.CANDIDATE_COMMIT;
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          if (!/^(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)\.(0|[1-9][0-9]*)(-[0-9A-Za-z.-]+)?$/.test(pkg.version)) throw new Error('Invalid package version.');
+          const head = execFileSync('git', ['rev-parse', '--verify', 'HEAD'], { encoding: 'utf8' }).trim();
+          if (!/^[a-f0-9]{40}$/.test(head) || head !== selected) throw new Error('Selected and checkout commits differ.');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, `sha=${head}\nversion=${pkg.version}\n`);
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, `Candidate version: ${pkg.version}\n\nCommit: ${head}\n\nNo tag or GitHub Release will be created or updated.\n`);
+          NODE
+
+  validate:
+    name: Validate the exact candidate source
+    needs: resolve
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    steps:
+      - name: Check out the resolved commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      - run: npm test
+      - run: npm run build
+      - run: npx --no-install playwright install --with-deps chromium
+      - run: npm run test:browser
+
+  package:
+    name: Candidate ${{ matrix.platform }} ${{ matrix.arch }}
+    needs: [resolve, validate]
+    timeout-minutes: 40
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: macos
+            arch: arm64
+            runner: macos-15
+          - platform: macos
+            arch: x64
+            runner: macos-15-intel
+          - platform: windows
+            arch: x64
+            runner: windows-2025
+    runs-on: ${{ matrix.runner }}
+    env:
+      CSC_IDENTITY_AUTO_DISCOVERY: 'false'
+      TARGET_PLATFORM: ${{ matrix.platform }}
+      TARGET_ARCH: ${{ matrix.arch }}
+      CANDIDATE_VERSION: ${{ needs.resolve.outputs.version }}
+      CANDIDATE_COMMIT: ${{ needs.resolve.outputs.sha }}
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out the same resolved commit
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          ref: ${{ needs.resolve.outputs.sha }}
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install locked dependencies on the target OS
+        run: npm ci
+      - name: Run portable tests on the target OS
+        run: npm test
+      - name: Build installers without publishing or certificate discovery
+        run: |
+          if [[ "$TARGET_PLATFORM" == macos ]]; then
+            npm run package -- --mac dmg zip "--$TARGET_ARCH" --publish never '-c.artifactName=Open-Sea-${version}-${os}-${arch}.${ext}'
+          else
+            npm run package -- --win nsis "--$TARGET_ARCH" --publish never '-c.artifactName=Open-Sea-${version}-${os}-${arch}.${ext}'
+          fi
+      - name: Verify the complete macOS ad-hoc application signature
+        if: matrix.platform == 'macos'
+        id: mac_signature
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs';
+          import path from 'node:path';
+          import os from 'node:os';
+          import { execFileSync, spawnSync } from 'node:child_process';
+          const pkg = JSON.parse(fs.readFileSync('package.json', 'utf8'));
+          const arch = process.env.TARGET_ARCH;
+          if (!['arm64', 'x64'].includes(arch)) throw new Error('Unexpected macOS candidate architecture.');
+          if (pkg.build.mac.identity !== '-' || pkg.build.mac.notarize !== false) throw new Error('This candidate must explicitly use ad-hoc signing without notarization.');
+          const app = path.resolve('release', arch === 'arm64' ? 'mac-arm64' : 'mac', `${pkg.build.productName}.app`);
+          execFileSync('/usr/bin/codesign', ['--verify', '--deep', '--strict', '--verbose=2', app], { stdio: 'inherit', timeout: 120000 });
+          const display = spawnSync('/usr/bin/codesign', ['--display', '--verbose=4', app], { encoding: 'utf8', timeout: 15000, maxBuffer: 65536 });
+          if (display.error || display.status !== 0) throw new Error('Could not inspect the macOS application signature.');
+          const details = `${display.stdout}\n${display.stderr}`;
+          if (!details.split(/\r?\n/).includes(`Identifier=${pkg.build.appId}`)
+              || !/^Signature=adhoc$/m.test(details) || /linker-signed/.test(details)
+              || !/^Info\.plist entries=[1-9][0-9]*$/m.test(details)
+              || !/^Sealed Resources version=[1-9][0-9]* rules=[1-9][0-9]* files=[1-9][0-9]*$/m.test(details)) {
+            throw new Error('Expected a complete ad-hoc app signature with the project identifier, bound Info.plist and sealed resources.');
+          }
+          const seal = fs.lstatSync(path.join(app, 'Contents', '_CodeSignature', 'CodeResources'));
+          if (!seal.isFile() || seal.isSymbolicLink() || seal.size === 0) throw new Error('The macOS resource seal is missing or invalid.');
+          const archives = fs.readdirSync('release').filter(name => name.endsWith(`-mac-${arch}.zip`));
+          if (archives.length !== 1) throw new Error('Expected exactly one ZIP archive for signature verification.');
+          const extracted = fs.mkdtempSync(path.join(os.tmpdir(), 'open-sea-package-check-'));
+          try {
+            execFileSync('/usr/bin/ditto', ['-x', '-k', path.resolve('release', archives[0]), extracted], { timeout: 120000 });
+            execFileSync('/usr/bin/codesign', ['--verify', '--deep', '--strict', '--verbose=2', path.join(extracted, `${pkg.build.productName}.app`)], { stdio: 'inherit', timeout: 120000 });
+          } finally {
+            fs.rmSync(extracted, { recursive: true, force: true });
+          }
+          console.log('Verified complete ad-hoc application signature; no Developer ID identity or notarization is claimed.');
+          fs.appendFileSync(process.env.GITHUB_OUTPUT, 'verified=true\n');
+          fs.appendFileSync(process.env.GITHUB_STEP_SUMMARY, 'macOS application: complete ad-hoc signature verified with codesign --verify --deep --strict. This is not Developer ID signing, notarization, or native GUI validation.\n');
+          NODE
+      - name: Collect installers, SHA-256 hashes and explicit validation limits
+        env:
+          MAC_SIGNATURE_VERIFIED: ${{ steps.mac_signature.outputs.verified }}
+        run: |
+          node --input-type=module <<'NODE'
+          import fs from 'node:fs/promises';
+          import { createReadStream } from 'node:fs';
+          import { createHash } from 'node:crypto';
+          import path from 'node:path';
+          const platform = process.env.TARGET_PLATFORM;
+          const arch = process.env.TARGET_ARCH;
+          const version = process.env.CANDIDATE_VERSION;
+          const commit = process.env.CANDIDATE_COMMIT;
+          if (platform === 'macos' && process.env.MAC_SIGNATURE_VERIFIED !== 'true') throw new Error('A verified macOS ad-hoc signature is required before collecting candidate files.');
+          const required = platform === 'macos' ? ['.dmg', '.zip'] : ['.exe'];
+          const files = (await fs.readdir('release')).filter(name => required.includes(path.extname(name))).sort();
+          if (required.some(extension => !files.some(name => path.extname(name) === extension))) throw new Error('An expected installer is missing.');
+          await fs.mkdir('candidate', { recursive: true });
+          const packages = [];
+          for (const name of files) {
+            const source = path.join('release', name);
+            const stat = await fs.lstat(source);
+            if (!stat.isFile() || stat.isSymbolicLink() || stat.size === 0) throw new Error('An installer is empty or not a regular file.');
+            const digest = createHash('sha256');
+            for await (const chunk of createReadStream(source)) digest.update(chunk);
+            packages.push({ name, bytes: stat.size, sha256: digest.digest('hex') });
+            await fs.copyFile(source, path.join('candidate', name));
+          }
+          const notice = [
+            'EXPERIMENTAL CANDIDATE — NOT A PUBLISHED RELEASE',
+            `Package version: ${version}`, `Source commit: ${commit}`, `Target: ${platform}/${arch}`, '',
+            'Automated unit, transport and Chromium fixture checks passed for this source.',
+            'This workflow does not run the official Codex application or a native GUI smoke test.',
+            'Windows native GUI compatibility has NOT been verified for this candidate.',
+            'Full macOS main-interface theming, controls, restoration and installer behavior require separate native verification.',
+            platform === 'macos'
+              ? 'The macOS application has a verified ad-hoc signature. It has no Developer ID signing or notarization; ad-hoc signing does not establish a trusted publisher.'
+              : 'Windows publisher signing is not claimed.',
+            'Build success and SHA-256 hashes do not establish platform compatibility.',
+            'Read VALIDATION.md before testing. No GitHub Release was created or updated.', '',
+          ].join('\n');
+          const metadata = {
+            schema: 'open-sea-candidate/1', candidate: true, published: false,
+            version, commit, platform, arch, node: process.version, builtAt: new Date().toISOString(),
+            automatedSourceChecks: 'passed', nativeUnitTests: 'passed',
+            macSignature: platform === 'macos' ? { kind: 'ad-hoc', verification: 'codesign-deep-strict', verified: true, developerId: false, notarized: false } : null,
+            nativeGuiValidation: 'not-performed-by-this-workflow', packages,
+          };
+          await fs.writeFile('candidate/SHA256SUMS.txt', packages.map(item => `${item.sha256}  ${item.name}`).join('\n') + '\n');
+          await fs.writeFile('candidate/BUILD-METADATA.json', JSON.stringify(metadata, null, 2) + '\n');
+          await fs.writeFile('candidate/CANDIDATE-NOTICE.txt', notice);
+          await fs.copyFile('docs/VALIDATION.md', 'candidate/VALIDATION.md');
+          await fs.appendFile(process.env.GITHUB_STEP_SUMMARY, notice + '\nPackages:\n' + packages.map(item => `- ${item.name} (${item.bytes} bytes) — SHA-256 ${item.sha256}`).join('\n') + '\n');
+          NODE
+      - name: Upload candidate files for manual native validation
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: open-sea-candidate-${{ needs.resolve.outputs.version }}-${{ matrix.platform }}-${{ matrix.arch }}-${{ needs.resolve.outputs.sha }}
+          path: candidate/
+          if-no-files-found: error
+          compression-level: 0
+          retention-days: 14

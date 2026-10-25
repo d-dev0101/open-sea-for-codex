@@ -1,0 +1,9 @@
+node_modules/
+dist/
+release/
+.local-evidence/
+TASK_PROGRESS.md
+.DS_Store
+*.log
+.playwright-cli/
+output/playwright/

@@ -1,0 +1,118 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; media-src 'self' open-sea-media: blob:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; frame-src 'none'; form-action 'none'">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="color-scheme" content="dark">
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Cpath d='M4 15c6-9 10 9 16 0s10 9 16 0M4 25c6-9 10 9 16 0s10 9 16 0' stroke='%2328676b' stroke-width='3' stroke-linecap='round' fill='none'/%3E%3C/svg%3E">
+    <title>Open Sea · Codex 海洋皮肤</title>
+    <link rel="stylesheet" href="./style.css">
+    <script src="../dist/preview.js" defer></script>
+    <script src="./app.js" defer></script>
+  </head>
+  <body>
+    <div class="app-shell">
+      <header class="topbar">
+        <a class="wordmark" href="#main" aria-label="Open Sea">
+          <svg viewBox="0 0 40 30" width="36" height="28" aria-hidden="true"><path d="M2 11c6-9 12 9 18 0s12 9 18 0M2 21c6-9 12 9 18 0s12 9 18 0" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round"/></svg>
+          <span>open sea<span class="wordmark-dot">.</span></span><span class="brand-caption">FOR CODEX</span>
+        </a>
+        <div class="topbar-right">
+          <span id="connection" class="connection"><span class="connection-dot" aria-hidden="true"></span><span id="connection-label" data-i18n="connecting">正在连接</span></span>
+          <div class="language-switch" role="group" aria-label="语言 / Language">
+            <button type="button" class="language-button" data-locale="zh" aria-pressed="true" lang="zh-CN">中</button>
+            <button type="button" class="language-button" data-locale="en" aria-pressed="false" lang="en">EN</button>
+          </div>
+        </div>
+      </header>
+
+      <main id="main" tabindex="-1">
+        <div class="intro">
+          <div><p class="eyebrow" data-i18n="eyebrow">A LITTLE ROOM TO BREATHE</p><h1 data-i18n="heading">把海，带到你的桌面。</h1></div>
+          <p class="intro-note" data-i18n="intro">为 Codex 换一片风景，<br>让专注慢慢发生。</p>
+        </div>
+
+        <div class="workspace">
+          <section class="scene-section" aria-labelledby="preview-title">
+            <div id="scene" class="scene" data-theme="ocean" role="group" aria-label="海洋皮肤效果预览">
+              <div class="scene-image" id="scene-image"></div>
+              <div id="ocean-preview" class="ocean-preview" aria-hidden="true"></div>
+              <div class="preview-topline"><span class="preview-tag"><span aria-hidden="true"></span><span id="preview-kind">海洋实时预览</span></span><span class="preview-layout-label" data-i18n="layoutPreview">CODEX 布局预览</span></div>
+              <div id="preview-feedback" class="preview-feedback" role="status" aria-live="polite"><p id="preview-feedback-title">正在加载真实海洋…</p><p id="preview-feedback-detail"></p></div>
+              <div class="codex-preview" aria-hidden="true">
+                <aside class="codex-sidebar">
+                  <div class="codex-brand"><svg viewBox="0 0 24 24" width="19" height="19" fill="none" stroke="currentColor" stroke-width="1.6"><path d="m8 5-6 7 6 7m8-14 6 7-6 7m-3-16-2 18"/></svg><b>Codex</b><span>◧</span></div>
+                  <div class="codex-new"><span>＋</span><span data-i18n="mockNew">新建任务</span></div>
+                  <div class="codex-nav"><span>⌕</span><span data-i18n="mockSearch">搜索</span></div>
+                  <div class="codex-nav"><span>◷</span><span data-i18n="mockAutomations">自动化</span></div>
+                  <div class="codex-nav"><span>◇</span><span data-i18n="mockSkills">技能</span></div>
+                  <div class="codex-label" data-i18n="mockProjects">项目</div>
+                  <div class="codex-project"><span>▱</span> open-sea</div>
+                  <div class="codex-task active" data-i18n="mockTask">我的新任务</div>
+                  <div class="codex-task" data-i18n="mockExample">预览工作区</div>
+                  <div class="codex-sidebar-bottom"><span>⚙</span><span data-i18n="mockSettings">设置</span><span class="sample-avatar">O</span></div>
+                </aside>
+                <div class="codex-main">
+                  <div class="codex-toolbar"><span data-i18n="mockNew">新建任务</span><span>▢ &nbsp; ···</span></div>
+                  <div class="codex-welcome"><span class="codex-spark">✳</span><h3 data-i18n="mockWelcome">下一步，想做什么？</h3><p data-i18n="mockWorkspace">open-sea &nbsp;⌄</p></div>
+                  <div class="codex-composer"><span data-i18n="mockPrompt">描述一个任务，从这里开始。</span><div class="codex-composer-tools"><span>＋ &nbsp; /</span><span data-i18n="mockModel">默认模型</span><span class="codex-send">↑</span></div></div>
+                  <div class="codex-footnote" data-i18n="mockFootnote">本地预览 · 示例内容</div>
+                </div>
+              </div>
+              <div class="scene-caption"><p id="preview-title">海洋</p><span id="preview-description">海风很轻，思绪很远。</span></div>
+              <div class="scene-bottomline"><span>OPEN SEA / <span id="scene-index">01</span></span><span id="motion-label">正在加载真实海洋…</span></div>
+            </div>
+            <p id="preview-note" class="preview-disclaimer">与 Codex 皮肤共用原版海洋渲染器。玻璃不透明度应用于客户端界面。</p>
+          </section>
+
+          <section class="controls" aria-labelledby="controls-title">
+            <div class="section-heading"><div><p class="eyebrow" data-i18n="makeYours">MAKE IT YOURS</p><h2 id="controls-title" data-i18n="controlsTitle">刚刚好的海面</h2></div><span class="section-symbol" aria-hidden="true">↗</span></div>
+            <div class="slider-control">
+              <div class="slider-heading"><label for="wave" data-i18n="wave">波浪起伏</label><output id="wave-value" for="wave">56</output></div>
+              <input id="wave" type="range" min="0" max="100" value="56" step="1">
+              <div class="slider-endpoints" aria-hidden="true"><span data-i18n="waveLow">平静</span><span data-i18n="waveHigh">轻涌</span></div>
+            </div>
+            <div class="slider-control">
+              <div class="slider-heading"><label for="daylight" data-i18n="daylight">日光明暗</label><output id="daylight-value" for="daylight">55</output></div>
+              <input id="daylight" type="range" min="0" max="100" value="55" step="1">
+              <div class="slider-endpoints" aria-hidden="true"><span data-i18n="daylightLow">暮色</span><span data-i18n="daylightHigh">晴昼</span></div>
+            </div>
+            <div class="slider-control">
+              <div class="slider-heading"><label for="opacity" data-i18n="opacity">玻璃不透明度</label><output id="opacity-value" for="opacity">40%</output></div>
+              <input id="opacity" type="range" min="15" max="90" value="40" step="1">
+              <div class="slider-endpoints" aria-hidden="true"><span data-i18n="opacityLow">更通透</span><span data-i18n="opacityHigh">更实</span></div>
+            </div>
+            <button id="pause-button" class="pause-button" type="button" aria-pressed="false"><span id="pause-icon" aria-hidden="true">Ⅱ</span><span id="pause-label" data-i18n="pause">暂停波浪</span><span class="pause-indicator" aria-hidden="true"></span></button>
+          </section>
+        </div>
+
+        <section class="themes-section" aria-labelledby="themes-title">
+          <div class="themes-heading"><h2 id="themes-title" data-i18n="themesTitle">或者，换一片风景</h2><span data-i18n="originalArtwork">原创风景 · 为专注而作</span></div>
+          <fieldset class="theme-options" id="theme-options"><legend class="visually-hidden" data-i18n="chooseTheme">选择背景</legend>
+            <label class="theme-card" data-theme="ocean"><input type="radio" name="theme" value="ocean" checked><span class="theme-thumbnail thumbnail-ocean"><span class="ocean-thumbnail-symbol" aria-hidden="true">≈</span><span class="theme-check" aria-hidden="true">✓</span></span><span class="theme-label"><span data-i18n="ocean">海洋</span><span class="theme-note" data-i18n="default">默认</span></span></label>
+            <label class="theme-card" data-theme="aurora"><input type="radio" name="theme" value="aurora"><span class="theme-thumbnail"><img src="./presets/aurora.svg" alt="" draggable="false"><span class="theme-check" aria-hidden="true">✓</span></span><span class="theme-label"><span data-i18n="aurora">极光</span><span class="theme-note">02</span></span></label>
+            <label class="theme-card" data-theme="dunes"><input type="radio" name="theme" value="dunes"><span class="theme-thumbnail"><img src="./presets/dunes.svg" alt="" draggable="false"><span class="theme-check" aria-hidden="true">✓</span></span><span class="theme-label"><span data-i18n="dunes">沙丘</span><span class="theme-note">03</span></span></label>
+            <label class="theme-card" data-theme="coast"><input type="radio" name="theme" value="coast"><span class="theme-thumbnail"><img src="./presets/coast.svg" alt="" draggable="false"><span class="theme-check" aria-hidden="true">✓</span></span><span class="theme-label"><span data-i18n="coast">海岸</span><span class="theme-note">04</span></span></label>
+            <button id="import-button" type="button" class="import-card"><span class="import-thumbnail" id="import-thumbnail"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><circle cx="8.5" cy="8.5" r="1.5"/><path d="m3 17 5-5 4 4 3-3 6 6"/></svg><span class="import-plus" aria-hidden="true">＋</span></span><span class="theme-label"><span id="import-label" data-i18n="importImage">导入自己的图片</span><span class="theme-note">↗</span></span></button>
+            <button id="import-video-button" type="button" class="import-card"><span class="import-thumbnail"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4" aria-hidden="true"><rect x="3" y="3" width="18" height="18" rx="4"/><path d="m10 8 6 4-6 4Z"/></svg></span><span class="theme-label"><span id="import-video-label" data-i18n="importVideo">导入动态视频</span><span class="theme-note">↗</span></span></button>
+          </fieldset>
+          <input id="preview-file" class="visually-hidden" type="file" accept="image/png,image/jpeg,image/webp" tabindex="-1" aria-hidden="true">
+          <div class="system-video-section">
+            <div class="system-heading"><div><h3 id="system-videos-title" data-i18n="systemVideos">Mac 动态壁纸</h3><p id="wallpaper-help" data-i18n="wallpaperHelp">在系统设置下载，回到这里即可选择。</p></div><div class="system-actions"><button id="refresh-wallpapers" type="button" class="small-button" data-i18n="refreshWallpapers">刷新</button><button id="open-wallpaper-settings" type="button" class="small-button" data-i18n="openWallpaperSettings">去系统下载 ↗</button></div></div>
+            <p id="system-wallpaper-status" class="media-note" role="status"></p>
+            <div id="system-wallpapers" class="system-wallpapers" role="group" aria-labelledby="system-videos-title"></div>
+            <p class="media-note" data-i18n="videoPrivacy">视频仅在本机使用；Apple 视频不随项目分发。</p>
+          </div>
+        </section>
+
+        <div id="error-box" class="error-box" role="alert" hidden><span aria-hidden="true">!</span><p id="error-message"></p><button id="dismiss-error" type="button" data-i18n="dismiss">知道了</button></div>
+      </main>
+
+      <footer class="footer">
+        <div class="status-area"><span id="status-dot" class="status-dot" aria-hidden="true"></span><div><p id="status-message" role="status" aria-live="polite" data-i18n="connecting">正在连接</p><p id="status-detail" class="status-detail" data-i18n="statusDetail">你的聊天内容不会出现在此面板。</p></div></div>
+        <div class="footer-actions"><button id="restore-button" type="button" class="button button-secondary" data-i18n="restore">恢复原界面</button><button id="launch-button" type="button" class="button button-primary"><span data-i18n="launch">启动带皮肤的 Codex</span><svg width="17" height="17" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M3 10h13m-5-5 5 5-5 5"/></svg></button></div>
+      </footer>
+    </div>
+  </body>
+</html>

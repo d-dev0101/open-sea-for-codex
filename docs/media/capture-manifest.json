@@ -1,0 +1,162 @@
+{
+  "schema": 1,
+  "capture": "Synthetic Codex layout, real production ocean renderer and skin adapter",
+  "privacy": {
+    "realSessions": false,
+    "officialCodexAccess": false,
+    "userFiles": false,
+    "appleMedia": false,
+    "network": "loopback allowlist only"
+  },
+  "source": {
+    "renderer": "runtime/ocean.js",
+    "adapter": "runtime/skin.js",
+    "fixture": "scripts/public-demo.html",
+    "sha256": {
+      "runtime/ocean.js": "22b11c13b9dd9416ba1641e2c655693ee46f9c4c109b7b3f9b5f95649f17d870",
+      "runtime/skin.js": "e04d709b1ebf095d4e6a1f930de2862ee0ab2a5f67ec7b773e32cb55970093a1",
+      "scripts/public-demo.html": "f53509b4f77939ddfa481a829458164081399f3176b11b06581ce1031323cde6"
+    }
+  },
+  "settings": {
+    "wave": 56,
+    "daylight": 55,
+    "opacity": 40
+  },
+  "clips": [
+    {
+      "file": "hero-dark.gif",
+      "width": 960,
+      "height": 600,
+      "fps": 10,
+      "frames": 60,
+      "durationSeconds": 6,
+      "rendererBackend": "webgpu",
+      "captureSeconds": 5.97,
+      "milestones": [
+        {
+          "frame": 0,
+          "elapsed": 1.3249999999999995,
+          "wave": 56,
+          "daylight": 55,
+          "opacity": 40,
+          "backend": "webgpu"
+        },
+        {
+          "frame": 30,
+          "elapsed": 4.308300000000003,
+          "wave": 56,
+          "daylight": 55,
+          "opacity": 40,
+          "backend": "webgpu"
+        },
+        {
+          "frame": 59,
+          "elapsed": 7.208200000000019,
+          "wave": 56,
+          "daylight": 55,
+          "opacity": 40,
+          "backend": "webgpu"
+        }
+      ],
+      "encoding": {
+        "colors": 64,
+        "dither": "none",
+        "gifsicleLossy": 900
+      },
+      "highQualityVideo": {
+        "file": "hero-dark.mp4",
+        "width": 1120,
+        "height": 700,
+        "fps": 10,
+        "codec": "H.264",
+        "audio": false,
+        "bytes": 5744824,
+        "sha256": "f9d45b6cb6323622919f9b10509c22c46e473df6a4b38a04b1aa17d6d3ad9ef5"
+      },
+      "bytes": 7241038,
+      "sha256": "046634a05ae371991960b6c4f9926d93960fbb9c8af7e9e3fe7e3b360045fe85"
+    },
+    {
+      "file": "controls-demo.gif",
+      "width": 960,
+      "height": 600,
+      "fps": 10,
+      "frames": 80,
+      "durationSeconds": 8,
+      "rendererBackend": "webgpu",
+      "captureSeconds": 7.97,
+      "milestones": [
+        {
+          "frame": 0,
+          "elapsed": 38.453900000000004,
+          "wave": 56,
+          "daylight": 55,
+          "opacity": 40,
+          "backend": "webgpu"
+        },
+        {
+          "frame": 40,
+          "elapsed": 42.44120000000022,
+          "wave": 88,
+          "daylight": 13,
+          "opacity": 40,
+          "backend": "webgpu"
+        },
+        {
+          "frame": 79,
+          "elapsed": 46.332900000000436,
+          "wave": 56,
+          "daylight": 55,
+          "opacity": 40,
+          "backend": "webgpu"
+        }
+      ],
+      "encoding": {
+        "colors": 64,
+        "dither": "none",
+        "gifsicleLossy": 500
+      },
+      "highQualityVideo": {
+        "file": "controls-demo.mp4",
+        "width": 1120,
+        "height": 700,
+        "fps": 10,
+        "codec": "H.264",
+        "audio": false,
+        "bytes": 5067170,
+        "sha256": "90012d35de97a04970dba0f435d0eee1d99aaa80cf1a10e2e43335b5552d59dd"
+      },
+      "bytes": 7775880,
+      "sha256": "9c74f9f59df3d4cba94e36c8d67a2754a53832bfe8d236d1ff1a6345a26383c3"
+    }
+  ],
+  "controller": {
+    "file": "preview-controller.png",
+    "source": "Actual controller in browser preview mode; labels explicitly identify mock layout",
+    "nativeBridge": false,
+    "bytes": 612649,
+    "sha256": "56a8c02f169952f014ed93739a30cb45dd9e95b152966157a9db4f248da29a1b",
+    "width": 1120,
+    "height": 1050
+  },
+  "requestedPaths": [
+    "/",
+    "/dist/preview.js",
+    "/icon.svg",
+    "/skin.js",
+    "/ui/app.js",
+    "/ui/index.html",
+    "/ui/presets/aurora.svg",
+    "/ui/presets/coast.svg",
+    "/ui/presets/dunes.svg",
+    "/ui/style.css"
+  ],
+  "checks": {
+    "offAllowlistRequests": 0,
+    "pageErrors": 0,
+    "realOceanAdvanced": true,
+    "mockLabelVisible": true,
+    "sourceFilesUnchanged": true
+  }
+}

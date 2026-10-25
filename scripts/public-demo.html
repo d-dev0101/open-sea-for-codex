@@ -1,0 +1,168 @@
+<!doctype html>
+<!-- Public recording fixture: all interface content is invented. No account, session,
+     host application, Apple wallpaper, or user filesystem is queried. -->
+<html lang="zh-CN" class="electron-dark">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'none'; media-src 'none'; font-src 'self'; frame-src 'none'; object-src 'none'">
+  <link rel="icon" href="data:,">
+  <title>Open Sea — public mock preview</title>
+  <style>
+    * { box-sizing:border-box; }
+    :root { color-scheme:dark; font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC",sans-serif; color:#f4f8f9; font-synthesis:none; }
+    body { margin:0; background:#0e191f; font-size:14px; }
+    button { font:inherit; color:inherit; border:0; }
+    [data-app-shell-frame] { height:100vh; width:100vw; overflow:hidden; position:relative; }
+    .titlebar { height:47px; display:flex; align-items:center; padding:0 20px; gap:18px; border-bottom:1px solid #ffffff12; }
+    .traffic { display:flex; gap:7px; }
+    .traffic i { width:10px; height:10px; border-radius:50%; background:#ff625a; }
+    .traffic i:nth-child(2) { background:#ffc04a; }
+    .traffic i:nth-child(3) { background:#32c955; }
+    .titlebar .arrows { color:#ffffff6b; font-size:19px; letter-spacing:13px; }
+    .titlebar .brand { display:flex; align-items:center; gap:8px; margin:auto; font-weight:580; font-size:13px; letter-spacing:.2px; }
+    .brand img { width:25px; height:25px; }
+    .mock-label { color:#d9e8e9; font-size:10px; letter-spacing:.45px; border:1px solid #ffffff29; padding:5px 9px; border-radius:5px; }
+    #root { display:flex; height:calc(100vh - 47px); }
+    aside.app-shell-left-panel { width:222px; flex-shrink:0; display:flex; border-right:1px solid #ffffff1a; }
+    .rail { width:43px; flex-shrink:0; padding:17px 7px; border-right:1px solid #ffffff0d; display:flex; align-items:center; flex-direction:column; gap:20px; color:#c6d4d8; }
+    .rail .active { background:#ffffff1b; border-radius:9px; padding:8px; }
+    .rail svg { width:17px; height:17px; }
+    .rail img { margin-top:auto; width:25px; height:25px; }
+    .sidebar-navigation { flex:1; padding:19px 13px 16px; min-width:0; display:flex; flex-direction:column; }
+    .sidebar-brand { display:flex; align-items:center; justify-content:space-between; font-weight:640; font-size:17px; margin-bottom:25px; }
+    .sidebar-brand span { color:#ccd9db80; font-size:13px; }
+    .nav-item { display:flex; align-items:center; gap:9px; padding:8px 8px; margin:0 -4px 5px; font-size:12px; color:#e5ecee; }
+    .nav-item svg { width:14px; height:14px; opacity:.8; }
+    .nav-item.selected { border-radius:7px; background:#ffffff14; }
+    .section-label { margin:26px 4px 12px; font-size:10px; color:#d7e3e5a1; letter-spacing:.7px; }
+    .task { padding:9px 5px; color:#d9e4e6; font-size:11px; white-space:nowrap; }
+    .task.active { background:#a1ded91b; border:1px solid #c7eeea1c; border-radius:7px; padding-left:9px; }
+    .workspace { display:flex; align-items:center; gap:7px; margin:0 4px 11px; font-size:12px; }
+    .workspace svg { width:15px; height:15px; }
+    .sidebar-bottom { margin-top:auto; padding:10px 4px 0; display:flex; align-items:center; gap:7px; font-size:11px; color:#d5e3e5b8; }
+    .sidebar-bottom i { width:6px; height:6px; background:#9ed5cf; border-radius:50%; }
+    main { position:relative; flex:1; min-width:0; display:flex; flex-direction:column; padding:0 30px 21px; }
+    .main-toolbar { height:51px; display:flex; align-items:center; justify-content:space-between; color:#e1eaecaa; font-size:11px; }
+    .main-toolbar span:last-child { color:#cbd7d9; font-size:15px; letter-spacing:7px; }
+    .welcome { text-align:center; margin:auto 0 24px; padding-bottom:26px; }
+    .welcome img { width:52px; height:52px; margin:0 0 16px; }
+    .welcome .overline { margin:0 0 9px; font-size:10px; color:#cbe9e8; letter-spacing:3px; }
+    h1 { font-size:30px; font-weight:520; letter-spacing:-.5px; margin:0 0 12px; text-shadow:0 1px 20px #061a2460; }
+    .subtitle { margin:0; color:#dde8ebc4; font-size:13px; line-height:1.7; }
+    .feature-chips { display:flex; justify-content:center; gap:10px; margin:22px 0 0; }
+    .feature-chips span { border:1px solid #ffffff25; border-radius:30px; padding:7px 11px; font-size:10px; background:#10262b26; color:#dcecef; }
+    .composer-wrap { max-width:708px; width:100%; margin:auto auto 0; }
+    .composer-utility { display:flex; gap:14px; height:30px; align-items:center; font-size:10px; color:#ecf1f3b3; padding:0 15px; }
+    .composer-surface-chrome { border:1px solid #e2f4f62b; border-radius:23px; padding:18px 20px 13px; min-height:117px; box-shadow:0 8px 35px #020b141c; }
+    .prompt { color:#dae6e9b0; font-size:12px; }
+    .composer-tools { display:flex; align-items:center; gap:13px; margin-top:31px; font-size:10px; color:#e0eaecb3; }
+    .composer-tools .plus { font-size:21px; font-weight:300; }
+    .composer-tools .model { margin-left:auto; }
+    .send { display:grid; place-items:center; width:27px; height:27px; border-radius:50%; color:#09272b; background:#b4e9e4; font-size:18px; }
+    .footnote { font-size:9px; letter-spacing:.35px; color:#d3e1e3b2; margin:12px 0 0; text-align:center; }
+    .live-pill { position:absolute; left:29px; top:62px; display:flex; align-items:center; gap:6px; font-size:9px; color:#d5f2ee; letter-spacing:1.2px; }
+    .live-pill i { width:5px; height:5px; border-radius:50%; background:#a5e4da; box-shadow:0 0 10px #95d6cf; }
+    .control-panel { display:none; position:absolute; right:25px; top:95px; width:266px; padding:21px 21px 18px; background:linear-gradient(145deg,#15292fe8,#111b22e8); border:1px solid #d3f1ef3b; border-radius:18px; box-shadow:0 15px 45px #00101633,inset 0 1px 0 #ffffff10; backdrop-filter:blur(20px); }
+    body.controls .control-panel { display:block; }
+    body.controls .welcome { width:calc(100% - 265px); margin:120px 0 auto; padding:0 12px 0 0; }
+    body.controls h1 { font-size:25px; line-height:1.35; }
+    body.controls .subtitle { font-size:11px; }
+    body.controls .feature-chips { display:none; }
+    .control-eyebrow { display:flex; align-items:center; gap:7px; color:#9bdcd6; font-size:9px; letter-spacing:1.6px; margin-bottom:8px; }
+    .control-eyebrow img { width:22px; height:22px; }
+    .control-panel h2 { font-size:20px; font-weight:550; letter-spacing:-.5px; margin:0 0 23px; }
+    .control { margin-bottom:21px; }
+    .control label { display:flex; justify-content:space-between; color:#e9f1f1; font-size:12px; }
+    .control output { color:#a4e4db; font-variant-numeric:tabular-nums; }
+    .range { height:3px; border-radius:3px; background:#c9e2e029; margin:17px 0 10px; position:relative; }
+    .fill { background:#9cd7d2; width:var(--value); height:100%; border-radius:inherit; }
+    .thumb { display:block; position:absolute; width:12px; height:12px; top:50%; left:var(--value); transform:translate(-50%,-50%); border:2px solid #dff9f5; border-radius:50%; background:#78bab7; box-shadow:0 0 11px #90e4da42; }
+    .control.active .thumb { box-shadow:0 0 0 5px #ace1da22,0 0 16px #90e4da45; }
+    .endpoints { display:flex; justify-content:space-between; font-size:9px; color:#b8d0d18a; }
+    .stage { margin:2px 0 0; padding-top:14px; border-top:1px solid #d4eded19; color:#bcd6d4; font-size:10px; text-align:center; }
+    body.controls .live-pill { top:62px; }
+  </style>
+</head>
+<body>
+<svg aria-hidden="true" style="display:none"><defs>
+  <symbol id="home" viewBox="0 0 24 24"><path d="m3 10 9-7 9 7v10H3Z"/><path d="M9 20v-7h6v7"/></symbol>
+  <symbol id="edit" viewBox="0 0 24 24"><path d="M12 5H4v15h15v-8M16 3l5 5-10 10H6v-5Z"/></symbol>
+  <symbol id="clock" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 6v6l4 2"/></symbol>
+  <symbol id="folder" viewBox="0 0 24 24"><path d="M3 20h18V6h-9L9 3H3Z"/></symbol>
+  <symbol id="grid" viewBox="0 0 24 24"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></symbol>
+</defs></svg>
+<div data-app-shell-frame>
+  <header class="titlebar" data-app-shell-titlebar>
+    <div class="traffic" aria-hidden="true"><i></i><i></i><i></i></div><span class="arrows" aria-hidden="true">‹ ›</span>
+    <div class="brand"><img src="/icon.svg" alt="Open Sea">Open Sea <span style="color:#b5cacf8f;font-weight:400">for Codex</span></div>
+    <span class="mock-label">Codex 布局演示 / Mock preview</span>
+  </header>
+  <div id="root">
+    <aside class="app-shell-left-panel">
+      <div class="rail" aria-hidden="true">
+        <svg class="active" style="box-sizing:content-box" fill="none" stroke="currentColor" stroke-width="1.6"><use href="#home"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#folder"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#clock"/></svg>
+        <svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#grid"/></svg>
+        <img src="/icon.svg" alt="">
+      </div>
+      <nav class="sidebar-navigation">
+        <div class="sidebar-brand">Codex <span>⌄ &nbsp; ⌕</span></div>
+        <div class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#edit"/></svg>新聊天</div>
+        <div class="nav-item"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#clock"/></svg>自动化</div>
+        <div class="section-label">示例项目 / DEMO</div>
+        <div class="workspace"><svg fill="none" stroke="currentColor" stroke-width="1.6"><use href="#folder"/></svg>Open Sea</div>
+        <div class="task active">海洋预览</div>
+        <div class="task">设计一处专注空间</div>
+        <div class="task">从一个新想法开始</div>
+        <div class="section-label">收藏</div>
+        <div class="task">灵感手记</div>
+        <div class="task">每一天的小进展</div>
+        <div class="sidebar-bottom"><i></i>示例内容 · 无真实会话</div>
+      </nav>
+    </aside>
+    <main data-app-shell-main-surface>
+      <header class="main-toolbar" data-app-shell-header-edge-scroll><span>新聊天</span><span>◫ ···</span></header>
+      <div class="live-pill"><i></i>LIVE OCEAN · 真实动态海洋</div>
+      <section class="welcome" data-app-shell-page-surface="true">
+        <img src="/icon.svg" alt="Open Sea">
+        <p class="overline">A LITTLE ROOM TO BREATHE</p>
+        <h1>把海，留在专注里。</h1>
+        <p class="subtitle">波浪缓缓流动，想法自在生长。</p>
+        <div class="feature-chips"><span>实时海洋</span><span>玻璃透明度可调</span><span>本地运行</span></div>
+      </section>
+      <div class="composer-wrap">
+        <div class="composer-utility"><span>▱ &nbsp; 示例工作区</span><span>◫ &nbsp; 此计算机</span></div>
+        <div class="composer-surface-chrome">
+          <div class="prompt">描述一个想法，从这里开始。</div>
+          <div class="composer-tools"><span class="plus">＋</span><span>示例权限 ⌄</span><span class="model">示例模型 ⌄</span><span class="send">↑</span></div>
+        </div>
+        <p class="footnote">布局仅作效果演示 · Mock interface, real ocean renderer</p>
+      </div>
+      <section class="control-panel" aria-label="公开演示控制台">
+        <div class="control-eyebrow"><img src="/icon.svg" alt="">OPEN SEA / LIVE</div><h2>调成你喜欢的海。</h2>
+        <div class="control" data-control="wave"><label>波浪起伏 <output>56</output></label><div class="range"><div class="fill"></div><i class="thumb"></i></div><div class="endpoints"><span>平静</span><span>轻涌</span></div></div>
+        <div class="control" data-control="daylight"><label>日光明暗 <output>55</output></label><div class="range"><div class="fill"></div><i class="thumb"></i></div><div class="endpoints"><span>暮色</span><span>晴昼</span></div></div>
+        <div class="control" data-control="opacity"><label>玻璃不透明度 <output>40%</output></label><div class="range"><div class="fill"></div><i class="thumb"></i></div><div class="endpoints"><span>更通透</span><span>更实</span></div></div>
+        <p class="stage">每一次调节，都实时看见。</p>
+      </section>
+    </main>
+  </div>
+</div>
+<script>
+  window.demoApply = (settings, active = null, stage = '每一次调节，都实时看见。') => {
+    for (const key of ['wave','daylight','opacity']) {
+      const control = document.querySelector(`[data-control="${key}"]`);
+      const range = key === 'opacity' ? (settings[key] - 15) / 75 * 100 : settings[key];
+      control.style.setProperty('--value', `${range}%`);
+      control.classList.toggle('active', key === active);
+      control.querySelector('output').textContent = settings[key] + (key === 'opacity' ? '%' : '');
+    }
+    document.querySelector('.stage').textContent = stage;
+    return window.__codexOpenSea?.apply({...settings,theme:'ocean',paused:false});
+  };
+</script>
+</body>
+</html>

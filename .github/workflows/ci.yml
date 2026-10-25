@@ -1,0 +1,146 @@
+name: Tests and browser fixtures
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ci-${{ github.workflow }}-${{ github.event.pull_request.number || github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  unit:
+    name: Node 22 unit tests (${{ matrix.platform }})
+    runs-on: ${{ matrix.runner }}
+    timeout-minutes: 15
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: Linux
+            runner: ubuntu-24.04
+          - platform: macOS
+            runner: macos-15
+          - platform: Windows
+            runner: windows-2025
+    env:
+      # Unit tests use Node and fixture adapters, never the Electron executable.
+      # Electron 45 also has no npm install hook that downloads its binary.
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    defaults:
+      run:
+        shell: bash
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Run unit and transport tests, including Windows PowerShell fixtures
+        run: npm test
+      - name: State the scope of these checks
+        if: always()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          Unit and transport tests run on Linux, macOS and Windows.
+          The Windows job also runs the PowerShell discovery helper against
+          fixture AppX cmdlets and temporary files. This is not a test of an
+          installed official Codex app, native GUI compatibility or a release package.
+          See docs/VALIDATION.md for actual integration evidence and open gaps.
+          SUMMARY
+
+  electron:
+    name: Isolated Electron companion and media transport (macOS)
+    runs-on: macos-15
+    timeout-minutes: 20
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install locked dependencies and the pinned Electron binary
+        run: |
+          npm ci
+          npx --no-install install-electron
+      - name: Test the actual companion and real range playback in isolated hosts
+        run: npm run test:electron
+      - name: Preserve isolated fixture diagnostics
+        if: always()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: isolated-electron-fixtures-${{ github.sha }}
+          # Only generated fixture diagnostics; never user data or media files.
+          path: |
+            .local-evidence/companion-e2e/report.json
+            .local-evidence/companion-e2e/failure.png
+            .local-evidence/companion-e2e/video.png
+            .local-evidence/companion-e2e/ocean.png
+            .local-evidence/companion-e2e/ocean-dusk.png
+            .local-evidence/companion-e2e/missing-video-*.png
+            .local-evidence/media-transport-e2e/report.json
+          include-hidden-files: true
+          if-no-files-found: warn
+          retention-days: 7
+      - name: State the scope of these checks
+        if: always()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          These tests launch only our own Electron fixtures and companion with
+          temporary user data and generated video. They verify the real local
+          import/protocol/tray path and CDP media interception before networking.
+          They never discover, launch, sign in to, or attach to the official Codex
+          application, and do not establish official-app or Windows compatibility.
+          SUMMARY
+
+  browser:
+    name: Build and Chromium fixtures (Linux only)
+    runs-on: ubuntu-24.04
+    timeout-minutes: 25
+    env:
+      ELECTRON_SKIP_BINARY_DOWNLOAD: '1'
+    steps:
+      - name: Check out source
+        uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - name: Set up Node.js
+        uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '22'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - name: Install locked dependencies
+        run: npm ci
+      - name: Build the self-contained renderer
+        run: npm run build
+      - name: Install Chromium and operating-system dependencies
+        run: npx --no-install playwright install --with-deps chromium
+      - name: Test browser fixtures and ocean lifecycle
+        run: npm run test:browser
+      - name: State the scope of these checks
+        if: always()
+        run: |
+          cat >> "$GITHUB_STEP_SUMMARY" <<'SUMMARY'
+          These jobs test source code and controlled Chromium fixtures.
+          They do not launch the official Codex desktop application, establish
+          native Windows GUI compatibility, or approve a release package.
+          See docs/VALIDATION.md for actual integration evidence and open gaps.
+          SUMMARY

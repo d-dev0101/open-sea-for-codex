@@ -1,0 +1,14 @@
+name: 💡 功能建议 / Feature request
+description: 说说你希望改进的体验 / Suggest an improvement
+title: "[Idea] "
+body:
+  - type: textarea
+    id: problem
+    attributes:
+      label: 你遇到的使用问题 / What problem are you solving?
+    validations:
+      required: true
+  - type: textarea
+    id: suggestion
+    attributes:
+      label: 你希望怎样改进 / Suggested improvement

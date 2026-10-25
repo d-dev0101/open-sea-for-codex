@@ -1,0 +1,30 @@
+name: 🤝 商业授权意向 / Commercial licensing
+description: 商用、内部商业使用、二开或销售授权 / Request commercial terms
+title: "[License] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        这是公开意向登记，不是授权合同。请勿填写身份材料、合同、私人联系方式、付款资料或商业秘密。
+        This public inquiry grants no license. Share only a non-confidential summary; no personal or sensitive documents.
+  - type: textarea
+    id: purpose
+    attributes:
+      label: 计划用途 / Intended use
+      description: 例如内部商业使用、产品集成或付费分发；不要包含客户或保密信息。
+    validations:
+      required: true
+  - type: dropdown
+    id: distribution
+    attributes:
+      label: 分发方式 / Distribution
+      options:
+        - 内部使用 / Internal use
+        - 对外分发 / External distribution
+        - 尚待讨论 / To be discussed
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: 其他非保密说明 / Other non-confidential notes

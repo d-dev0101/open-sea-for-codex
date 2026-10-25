@@ -1,0 +1,34 @@
+name: 🐛 问题反馈 / Bug report
+description: 安装、动态背景、透明度或恢复问题 / Installation and skin issues
+title: "[Bug] "
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈。请先隐藏会话标题、聊天内容、账号、个人路径和令牌。截图请用测试会话。
+        Please remove private conversations, account details, paths and credentials before posting.
+  - type: input
+    id: version
+    attributes:
+      label: Open Sea 版本 / Version
+      placeholder: 0.1.0-beta.1
+    validations:
+      required: true
+  - type: input
+    id: platform
+    attributes:
+      label: 系统、芯片与 Codex 版本 / OS, architecture and Codex version
+      placeholder: macOS + Apple silicon / Windows x64 + Codex version
+    validations:
+      required: true
+  - type: textarea
+    id: steps
+    attributes:
+      label: 复现步骤与预期结果 / Steps and expected result
+    validations:
+      required: true
+  - type: textarea
+    id: evidence
+    attributes:
+      label: 脱敏截图或错误信息 / Sanitized evidence
+      description: 不要上传完整聊天记录、配置目录、调试地址或私人壁纸。 / No private logs, profiles or media.

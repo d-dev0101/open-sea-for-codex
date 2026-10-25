@@ -1,0 +1,19 @@
+Required Notice: Copyright (c) 2026 d-dev0101 — Open Sea for Codex.
+Required Notice: Original project components are licensed under PolyForm Noncommercial 1.0.0. Except for purposes expressly permitted by LICENSE and statutory rights, commercial use, including commercial internal business use, requires a separate license from the relevant rights holder. See LICENSE and docs/COMMERCIAL-LICENSE.md.
+Required Notice: Third-party and previously MIT-licensed components retain their own licenses and are excluded from the project's noncommercial restriction. See THIRD_PARTY_NOTICES.md and licenses/.
+
+License scope
+-------------
+The root LICENSE applies only to original contributions controlled by d-dev0101
+in the companion, adapters, controller UI, local media helper, build/test tools
+and documentation, except components listed in THIRD_PARTY_NOTICES.md.
+
+The following remain MIT-licensed: runtime/ocean.js, runtime/ocean-preview.jpg,
+runtime/vendor/**, assets/icon.* and src/tray-icon*. Their applicable notices
+are retained in licenses/. Third-party dependencies and referenced projects
+retain their own terms. Nothing here withdraws rights already granted for
+previously licensed copies or restricts independent use of MIT components.
+
+This is source-available software, not an OSI-approved open-source release.
+OpenAI, Apple and other marks belong to their respective owners. No rights in
+those marks or their applications/wallpapers are granted by this project.

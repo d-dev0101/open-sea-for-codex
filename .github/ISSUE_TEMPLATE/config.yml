@@ -1,0 +1,5 @@
+blank_issues_enabled: true
+contact_links:
+  - name: 📖 安装与排错 / Installation help
+    url: https://github.com/d-dev0101/open-sea-for-codex/blob/main/docs/INSTALL.zh.md
+    about: 先查看安装、更新和恢复方法 / Read installation and recovery steps first.
