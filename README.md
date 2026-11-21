@@ -38,13 +38,13 @@ Open Sea 是搭配 **官方 Codex 桌面客户端** 使用的独立本地控制�
 
 ### 1️⃣ 下载适合你电脑的版本
 
-前往 **[Releases 下载页面 →](https://github.com/d-dev0101/open-sea-for-codex/releases)**，按下表选择文件：
+按电脑类型选择安装包。[发行说明与校验值 →](https://github.com/d-dev0101/open-sea-for-codex/releases/tag/v0.1.0-beta.1)
 
-| 你的电脑 | 选择的安装包 | 当前验证范围 |
+| 你的电脑 | 直接下载 | 当前验证范围 |
 | --- | --- | --- |
-| 🍎 Mac · Apple 芯片（M 系列） | `mac-arm64` 的 `.dmg` 或 `.zip` | 用户已确认真实 Codex 中的动态海洋、顶部透明导航正常；其他效果见验证记录 |
-| 🍎 Mac · Intel | `mac-x64` 的 `.dmg` 或 `.zip` | 已有架构构建与签名检查；尚未完成 Intel Mac 手动验证 |
-| 🪟 Windows · x64 | `win-x64` 的 `.exe` | **实验性**：已有构建与自动化检查，尚未完成原生 Windows 手动验证 |
+| 🍎 Mac · Apple 芯片（M 系列） | [DMG](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-arm64.dmg) · [ZIP](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-arm64.zip) | 用户已确认真实 Codex 中的动态海洋、顶部透明导航正常；其他效果见验证记录 |
+| 🍎 Mac · Intel | [DMG](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-x64.dmg) · [ZIP](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-x64.zip) | 已有架构构建与签名检查；尚未完成 Intel Mac 手动验证 |
+| 🪟 Windows · x64 | [EXE](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-win-x64.exe) | **实验性**：已有构建与自动化检查，尚未完成原生 Windows 手动验证 |
 
 不确定 Mac 芯片？点 **苹果菜单 → 关于本机**。只选择 Release 实际提供的文件；GitHub 的 `Source code` 是源码，不是安装包。
 
