@@ -38,13 +38,13 @@ Open Sea is an independent local companion for the **official Codex desktop app*
 
 ### 1️⃣ Choose your download
 
-Open **[Releases →](https://github.com/d-dev0101/open-sea-for-codex/releases)** and select the package for your computer:
+Choose a package for your computer. [Release notes and checksums →](https://github.com/d-dev0101/open-sea-for-codex/releases/tag/v0.1.0-beta.1)
 
-| Computer | Package to choose | Current validation |
+| Computer | Direct download | Current validation |
 | --- | --- | --- |
-| 🍎 Mac · Apple silicon | `mac-arm64` `.dmg` or `.zip` | User-confirmed ocean and translucent upper navigation in real Codex; other checks are detailed in the validation record |
-| 🍎 Mac · Intel | `mac-x64` `.dmg` or `.zip` | Architecture builds and signature checks; no completed manual Intel Mac test |
-| 🪟 Windows · x64 | `win-x64` `.exe` | **Experimental:** builds and automated checks, without native Windows manual validation |
+| 🍎 Mac · Apple silicon | [DMG](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-arm64.dmg) · [ZIP](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-arm64.zip) | User-confirmed ocean and translucent upper navigation in real Codex; other checks are detailed in the validation record |
+| 🍎 Mac · Intel | [DMG](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-x64.dmg) · [ZIP](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-mac-x64.zip) | Architecture builds and signature checks; no completed manual Intel Mac test |
+| 🪟 Windows · x64 | [EXE](https://github.com/d-dev0101/open-sea-for-codex/releases/download/v0.1.0-beta.1/Open-Sea-0.1.0-beta.1-win-x64.exe) | **Experimental:** builds and automated checks, without native Windows manual validation |
 
 On Mac, check **Apple menu → About This Mac** if unsure. Choose only files attached to that release. GitHub's **Source code** downloads are not application installers.
 
